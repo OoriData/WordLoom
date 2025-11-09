@@ -1,6 +1,10 @@
+# Word Loom Specification
+
+**License**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+
 Word Loom is a convention for expressing language text and templates for AI language model-related uses, for example prompt templates. The format is based on [TOML](https://toml.io/), and word looms are meant to be kept in resource directories for use with code invoking LLMs.
 
-Basic principles:
+## Basic Principles
 
 1. Separation of code from natural language
     * Must be a straightforward process to translate any natural language elements
