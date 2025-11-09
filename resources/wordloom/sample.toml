@@ -1,0 +1,71 @@
+# Sample Word Loom file for testing
+# Warning: there is a difference between single & double quotes in TOML. Former is not escaped.
+# Since in the root table, all prompts in this file will default to English
+lang = 'en'
+
+# === i18n-focused examples ===
+
+[davinci3_instruct_system]
+_ = '''
+Obey the instruction below, based on the provided context. If you cannot obey the instruction
+based on the provided context, respond: "I don't have enough information to comply".
+'''
+
+[i18n_context]
+_ = '''
+Internationalization is a corporate strategy that involves making products and services as adaptable as possible, so they can easily enter different national markets. This often requires the assistance of subject matter experts. Internationalization is sometimes shortened to "i18n", where 18 represents the number of characters in the word.
+'''
+source = 'https://www.lionbridge.com/blog/translation-localization/localization-globalization-internationalization-whats-the-difference/'
+
+[write_i18n_advocacy]
+_ = '''
+{davinci3_instruct_system}
+
+CONTEXT: {i18n_context}
+
+INSTRUCTION: Write a corporate memo encouraging our company to take i18n seriously
+'''
+# Declare template vars, for introspection in code. Presence of markers signals that this is a template.
+_m = ['davinci3_instruct_system', 'i18n_context']
+
+[translate_request]
+_ = 'Comment dit-on en anglais: {hardcoded_food}?'
+lang = 'fr'  # Override default language code for this item
+_m = ['hardcoded_food']
+
+[hardcoded_food]
+_ = 'pomme de terre'
+lang = 'fr'
+
+[hello_translated]
+_ = 'Hello'
+_fr = 'Salut'
+
+[goodbye_translated]
+_ = 'Adieu'
+lang = 'fr'  # Override default language code for this item
+_en = 'Goodbye'
+
+# === General-purpose prompt examples ===
+
+[system_instruction]
+_ = 'You are a helpful assistant that provides concise and accurate answers.'
+
+[code_review_prompt]
+_ = '''
+Review the following code and provide feedback on:
+1. Code quality and readability
+2. Potential bugs or issues
+3. Suggestions for improvement
+
+Code:
+{code_snippet}
+'''
+_m = ['code_snippet']
+
+[greeting_multilang]
+_ = 'Hello, how can I help you today?'
+_fr = "Bonjour, comment puis-je vous aider aujourd'hui?"
+_es = '¡Hola! ¿Cómo puedo ayudarte hoy?'
+_de = 'Hallo, wie kann ich Ihnen heute helfen?'
+_ja = 'こんにちは、今日はどのようにお手伝いできますか？'

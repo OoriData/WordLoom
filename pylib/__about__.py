@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2023-present Oori Data <info@oori.dev>
+#
+# SPDX-License-Identifier: Apache-2.0
+# wordloom.about
+
+__version__ = '0.10.0'

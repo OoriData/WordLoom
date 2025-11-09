@@ -1,1 +1,1 @@
-# WordLoom
+Word Loom is a convention for expressing language text and templates for AI language model-related uses, for example prompt templates. The format is based on TOML, and word looms are meant to be kept in resource directories for use with code invoking LLMs.
