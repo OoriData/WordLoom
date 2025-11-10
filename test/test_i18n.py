@@ -113,7 +113,7 @@ def test_openai_multilingual_workflow(i18n_loom, mocker):
     assert 'Bonjour' in greeting_text
 
     # Use with mock OpenAI
-    response = mock_client.chat.completions.create(
+    response = mock_client.chat.completions.create(  # noqa: F841
         model='gpt-4',
         messages=[
             {'role': 'system', 'content': greeting_text},

@@ -104,6 +104,10 @@ This is an under-considered area in AI prompting. When dealing with multiple lan
 
 Contributions welcome! This is an early-stage format, and we're interested in feedback from the community about what works and what doesn't in real-world usage.
 
+<!-- For maintainers, see:
+- [SETUP_GUIDE.md](SETUP_GUIDE.md) - GitHub Actions and PyPI publishing setup
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Common development tasks -->
+
 # License
 
 - **Code** (Python library): Apache 2.0 - See [LICENSE](LICENSE)
