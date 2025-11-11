@@ -4,9 +4,9 @@ A convention for expressing language text and templates for AI language model-re
 
 # Why Word Loom?
 
-When working with LLMs, we've found ourselves needing better ways to manage prompts. Traditional code doesn't quite fit—prompts are natural language, not code. But they're also not just static text—they need templating, versioning, metadata and crucially, **internationalization**.
+When working with LLMs, we've found ourselves needing better ways to manage prompts. Traditional code doesn't quite fit—prompts are natural language, not code. But they're also not just static text—they need templating, versioning, metadata and, crucially, internationalization.
 
-Word Loom addresses a gap that becomes obvious once you start building real LLM applications:
+Word Loom addresses some gaps that become clear once you start building real LLM applications:
 
 1. **Separation of concerns**: Keep your prompts out of your code, making them easier to iterate, version, and review
 2. **Multilingual by design**: LLM prompt engineering isn't just translation—a prompt that works well in English may need significant changes to achieve similar results in Japanese or Spanish. Word Loom lets you keep all language variants together, test them independently, and maintain metadata about their performance
@@ -65,7 +65,7 @@ response = client.chat.completions.create(
     model='gpt-4',
     messages=[
         {'role': 'system', 'content': greeting_text},
-        {'role': 'user', 'content': 'Tell me about Python'}
+        {'role': 'user', 'content': 'How does an LLM work?'}
     ]
 )
 ```

@@ -259,7 +259,7 @@ print(prompt.markers)  # ['target_lang', 'text']
 expanded = str(prompt).format(target_lang='French', text='Hello')
 ```
 
-**TODO**: Add examples of more complex prompts with e.g. nested loops, such as ReAct loops.
+**TODO**: Add examples of more complex prompts with e.g. nested loops, and "agentic" blah blah blah.
 
 Tips:
 
