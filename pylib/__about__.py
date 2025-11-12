@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: Apache-2.0
 # wordloom.about
 
-__version__ = '0.10.0'
+__version__ = '0.10.1'
