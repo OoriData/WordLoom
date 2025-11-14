@@ -45,17 +45,28 @@ Source = "https://github.com/OoriData/WordLoom"
 [tool.hatch.version]
 path = "pylib/__about__.py"
 
-# Rewriting path in distribution
-[tool.hatch.build.sources]
-"pylib" = "wordloom"
-"resources" = "wordloom/resources"
-
+# Package configuration
+# Note: We only remap pylib->wordloom for wheels, not for sdist
+# This ensures both direct wheel builds and wheels-from-sdist work correctly
 [tool.hatch.build.targets.wheel]
 only-include = ["pylib", "resources"]
 
 [tool.hatch.build.targets.wheel.sources]
 "pylib" = "wordloom"
 "resources" = "wordloom/resources"
+
+[tool.hatch.build.targets.sdist]
+# Preserve original pylib structure in sdist so wheel-from-sdist can find it
+only-include = [
+  "pylib",
+  "resources",
+  "test",
+  "README.md",
+  "LICENSE",
+  "LICENSE-spec",
+  "wordloom_spec.md",
+  "pyproject.toml",
+]
 
 # Hatch environments are too fiddly. For example, from `hatch run test` I get
 # ModuleNotFoundError: No module named 'wordloom'
