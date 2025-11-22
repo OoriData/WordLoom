@@ -43,7 +43,12 @@ Code:
 _m = ['code_snippet']  # Declare template variables
 ```
 
-Use it with any LLM API (OpenAI example):
+# Python implementation
+
+[![PyPI - Version](https://img.shields.io/pypi/v/wordloom.svg)](https://pypi.org/project/WordLoom)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/wordloom.svg)](https://pypi.org/project/WordLoom)
+
+An example using Word Loom with an LLM API. OpenAI in this case, but Word Loom can work with any integration.
 
 ```python
 from openai import OpenAI
@@ -113,7 +118,10 @@ The specification is under CC BY 4.0 to encourage broad adoption and derivative 
 
 # Acknowledgments
 
-Created by [Oori Data](https://oori.dev). Word Loom emerged from our work building multilingual LLM applications and finding gaps in existing prompt management approaches.
+<table><tr>
+  <td><a href="https://oori.dev/"><img src="https://www.oori.dev/assets/branding/oori_Logo_FullColor.png" width="64" /></a></td>
+  <td>Word Loom is primarily developed by the crew at <a href="https://oori.dev/">Oori Data</a>. We offer LLMOps, data pipelines and software engineering services around AI/LLM applications. Word Loom emerged from our work building LLM applications with sophisticated prompt management needs and multilingual imperatives.</td>
+</tr></table>
 
 # Related Work
 

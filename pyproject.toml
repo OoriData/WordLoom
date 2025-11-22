@@ -11,30 +11,34 @@ requires-python = ">=3.12"
 license = "Apache-2.0"
 keywords = ["llm", "prompt", "template", "toml", "i18n", "localization"]
 authors = [
-  { name = "Uche Ogbuji", email = "uche@ogbuji.net" },
+    { name = "Uche Ogbuji", email = "uche@ogbuji.net" },
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
-]
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Utilities",]
 dependencies = [
-  "tomli",  # TOML parsing for Python < 3.11; 3.11+ has tomllib built-in
+    "tomli",  # TOML parsing for Python < 3.11; 3.11+ has tomllib built-in
 ]
 
 [project.optional-dependencies]
 # Extra requirements for project contributors & other developers
 dev = [
-  "build",
-  "twine",
-  "hatch",
-  "pipdeptree",
-  "ruff",
-  "pytest",
-  "pytest-mock",
+    "build",
+    "twine",
+    "hatch",
+    "pipdeptree",
+    "ruff",
+    "pytest",
+    "pytest-mock",
 ]
 
 [project.urls]
@@ -58,66 +62,68 @@ only-include = ["pylib", "resources"]
 [tool.hatch.build.targets.sdist]
 # Preserve original pylib structure in sdist so wheel-from-sdist can find it
 only-include = [
-  "pylib",
-  "resources",
-  "test",
-  "README.md",
-  "LICENSE",
-  "LICENSE-spec",
-  "wordloom_spec.md",
-  "pyproject.toml",
+    "pylib",
+    "resources",
+    "test",
+    "README.md",
+    "LICENSE",
+    "LICENSE-spec",
+    "wordloom_spec.md",
+    "pyproject.toml",
 ]
 
-# Hatch environments are too fiddly. For example, from `hatch run test` I get
-# ModuleNotFoundError: No module named 'wordloom'
-# This may well have to do with my rewriting path in distribution,
-# But I'm not compromising on that, so I guess just install & use
-# e.g. pytest directly (tried dev-mode false, but no difference)
+# Note: hatch environments don't work well with our pylib→wordloom source remapping.
+# The path remapping in [tool.hatch.build.sources] only applies during wheel building,
+# not in dev environments. Hatch's dev-mode uses editable installs which can't apply
+# the remapping, and dev-mode=false means no install happens at all.
+#
+# We prefer proper installation over dev-mode shortcuts anyway.
+# Use: `uv pip install -U . && pytest test/`
 [tool.hatch.envs.default]
 dependencies = [
-  "coverage[toml]>=6.5",
-  "pytest",
-  "pytest-mock",
-  "pytest-httpx",
-  "pytest-asyncio",
+    "coverage[toml]>=6.5",
+    "pytest",
+    "pytest-mock",
+    "pytest-httpx",
+    "pytest-asyncio",
 ]
 dev-mode = false
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:test}"
 test-cov = "coverage run -m pytest {args:test}"
 cov-report = [
-  "- coverage combine",
-  "coverage report",
+    "- coverage combine",
+    "coverage report",
 ]
 cov = [
-  "test-cov",
-  "cov-report",
+    "test-cov",
+    "cov-report",
 ]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.10", "3.11", "3.12"]
+python = ["3.12", "3.13"]
 
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
-  "black>=23.1.0",
-  "mypy>=1.0.0",
-  "ruff>=0.0.243",
+    "black>=23.1.0",
+    "mypy>=1.0.0",
+    "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
 typing = "mypy --install-types --non-interactive {args:pylib/wordloom test}"
 style = [
-  "ruff {args:.}",
-  "black --check --diff {args:.}",
+    "ruff {args:.}",
+    "black --check --diff {args:.}",
 ]
 fmt = [
-  "black {args:.}",
-  "ruff --fix {args:.}",
-  "style",
+    "black {args:.}",
+    "ruff --fix {args:.}",
+    "style",
 ]
 all = [
-  "style",
-  "typing",
+    "style",
+    "typing",
 ]
 
 [tool.black]
@@ -130,18 +136,18 @@ target-version = "py310"
 line-length = 120
 lint.select = ["E", "F"]
 lint.ignore = [
-  # Allow non-abstract empty methods in abstract base classes
-  "B027",
-  # Allow boolean positional values in function calls, like `dict.get(... True)`
-  "FBT003",
-  # Ignore checks for possible passwords
-  "S105", "S106", "S107",
-  # Ignore complexity
-  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+    # Allow non-abstract empty methods in abstract base classes
+    "B027",
+    # Allow boolean positional values in function calls, like `dict.get(... True)`
+    "FBT003",
+    # Ignore checks for possible passwords
+    "S105", "S106", "S107",
+    # Ignore complexity
+    "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
 ]
 lint.unfixable = [
-  # Don't touch unused imports
-  "F401",
+    # Don't touch unused imports
+    "F401",
 ]
 
 [tool.ruff.lint.isort]
@@ -166,7 +172,7 @@ source_pkgs = ["wordloom", "test"]
 branch = true
 parallel = true
 omit = [
-  "pylib/__about__.py",
+    "pylib/__about__.py",
 ]
 
 [tool.coverage.paths]
@@ -175,7 +181,7 @@ test = ["test", "*/test"]
 
 [tool.coverage.report]
 exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
 ]

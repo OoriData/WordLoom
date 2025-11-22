@@ -2,6 +2,17 @@ WordLoom Contributor Guide
 
 # Quick Reference
 
+## Why We Use `uv pip install -U .`
+
+This project uses a source layout where `pylib/` becomes `wordloom/` during package building. This remapping only happens during wheel building, not in development environments.
+
+**Why not use hatch environments?**
+- Hatch's path remapping (`tool.hatch.build.sources`) only applies during wheel building
+- Hatch's dev-mode uses editable installs which can't apply the source remapping
+- Setting `dev-mode=false` means no install happens at all
+
+**Solution:** We use proper package installation (`uv pip install -U .`) instead of editable/dev-mode installs. This ensures the source remapping is applied correctly and your development environment matches the built package.
+
 ## Daily Development
 
 ```bash
