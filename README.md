@@ -129,3 +129,10 @@ Since we started work on Word Loom there have bene some other projects emerging 
 
 - [IBM's Prompt Declaration Language](https://github.com/IBM/prompt-declaration-language) - A more comprehensive language for prompt engineering
 - [PromptL](https://promptl.ai/)
+- [Promptfoo](https://github.com/promptfoo/promptfoo) - Primarily for testing/evals; uses YAML-based configurations to manage and version prompts. Philosophy is: prompts as configuration
+- [Lilypad](https://www.google.com/search?q=https://github.com/mirascope/lilypad) - newer project; emphasizes versioning and managing prompts as code artifacts rather than just strings
+- [Dotprompt](https://www.google.com/search?q=https://github.com/firebase/genkit/tree/main/js/dotprompt) (by Firebase Genkit) - format specifically for defining prompts in .prompt files (using a subset of Handlebars)
+- [Instructor](https://github.com/jxnl/instructor) - Uses Pydantic to swap raw LLM responses for structured Python objects
+- [Magentic](https://github.com/jackmpcollins/magentic) - Uses Python decorators to turn functions into LLM calls
+- [Pydantic AI](https://github.com/pydantic/pydantic-ai) - Newer framework from the Pydantic team that treats agents and prompts as strictly typed entities
+- [BAML](https://github.com/boundaryml/baml) - AI framework for prompts within code
