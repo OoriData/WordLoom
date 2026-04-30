@@ -29,7 +29,10 @@ Resolved values are exposed as ``language_item.file_bindings`` (a plain dict),
 and the ``language_item.render(**kwargs)`` helper merges them with any runtime
 kwargs before calling ``str.format``.
 
-**Warning:** The security model prevents path traversal, but it cannot protect against malicious *content* inside included files. If file contents are user-influenced or come from untrusted sources, they could inject instructions into your prompts. Only include files you trust, or inspect/strip their content before loading.
+**Warning:** The security model prevents path traversal, but it cannot protect against malicious *content*
+inside included files. If file contents are user-influenced or come from untrusted sources,
+they could inject instructions into your prompts. Only include files you trust, or inspect/strip
+content before loading.
 '''
 
 from __future__ import annotations
