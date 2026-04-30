@@ -9,11 +9,11 @@ Metadata values in a Word Loom item (i.e. non-underscore, non-lang keys) that
 carry a ``file:``, ``dir:``, or ``glob:`` prefix are resolved to their text
 content at load time when this extension is active.
 
-  file:<rel-path>   — UTF-8 content of that single file
-  dir:<rel-path>    — all UTF-8 files under the directory, concatenated and
-                      headed with ``=== relative/path ===`` separators
-  glob:<pattern>    — same concatenation for files matching the glob pattern
-                      relative to the loom directory
+  file:<rel-path>: UTF-8 content of that single file
+  dir:<rel-path> : all UTF-8 files under the directory, concatenated and
+                   headed with ``=== relative/path ===`` separators
+  glob:<pattern> : same concatenation for files matching the glob pattern
+                   relative to the loom directory
 
 All paths are relative to the directory containing the loom TOML file and must
 stay within that directory (directory-traversal attempts raise ValueError).
@@ -28,6 +28,8 @@ This extension is opt-in:
 Resolved values are exposed as ``language_item.file_bindings`` (a plain dict),
 and the ``language_item.render(**kwargs)`` helper merges them with any runtime
 kwargs before calling ``str.format``.
+
+**Warning:** The security model prevents path traversal, but it cannot protect against malicious *content* inside included files. If file contents are user-influenced or come from untrusted sources, they could inject instructions into your prompts. Only include files you trust, or inspect/strip their content before loading.
 '''
 
 from __future__ import annotations

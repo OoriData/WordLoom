@@ -107,7 +107,7 @@ This is an under-considered area in AI prompting. When dealing with multiple lan
 
 # Contributing
 
-Contributions welcome! We're interested in feedback from the community about what works and what doesn't in real-world usage. To get help with the code implementation, read [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions welcome! We're interested in feedback from the community about what works and what doesn't in real-world usage. To get help with the code implementation, or to learn about our packaging approach, read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # License
 

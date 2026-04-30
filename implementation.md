@@ -172,23 +172,3 @@ loom = wordloom.load(toml_bytes, features={'file-inclusion'}, base_dir='/path/to
 ```
 
 Without a base directory, the feature raises `ValueError` at load time.
-
----
-
-## Development workflow
-
-```bash
-# Install (required after any pylib/ change)
-uv pip install -U .
-
-# Run tests
-pytest test/ -v
-
-# Run only the file-inclusion tests
-pytest test/test_file_inclusion.py -v
-
-# Lint
-ruff check .
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for release and packaging details.
