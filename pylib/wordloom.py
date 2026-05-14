@@ -13,6 +13,7 @@ for AI/LLM applications, with support for multiple languages and metadata.
 import io
 import tomli
 import warnings
+from pathlib import Path
 
 
 class language_item(str):
@@ -31,7 +32,7 @@ class language_item(str):
     'jambon'
     '''
 
-    def __new__(cls, value, deflang, altlang=None, meta=None, markers=None):
+    def __new__(cls, value, deflang, altlang=None, meta=None, markers=None, file_bindings=None):
         '''
         Construct a new text item
 
@@ -40,6 +41,7 @@ class language_item(str):
         altlang - dictionary of text values in alternative languages
         meta - dictionary of metadata
         markers - used to specify values that can be set, with the text value is treated as a template
+        file_bindings - resolved file/dir/glob inclusions (populated by the file-inclusion feature)
         '''
         assert isinstance(value, str)
         self = super(language_item, cls).__new__(cls, value)
@@ -47,6 +49,7 @@ class language_item(str):
         self.meta = meta or {}
         self.markers = markers or {}
         self.altlang = altlang or {}
+        self.file_bindings = file_bindings or {}
         return self
 
     def __repr__(self):
@@ -55,7 +58,21 @@ class language_item(str):
     def in_lang(self, lang):
         return self.altlang.get(lang)
 
-    def clone(self, value=None, deflang=None, altlang=None, meta=None, markers=None):
+    def render(self, **kwargs):
+        '''
+        Format this template, merging file_bindings with any runtime kwargs.
+
+        file_bindings values are the base; kwargs override them, so callers can
+        supply or override individual slots at runtime.
+
+        >>> from wordloom import language_item as LI
+        >>> t = LI('Hello {name}', deflang='en')
+        >>> t.render(name='World')
+        'Hello World'
+        '''
+        return str(self).format(**{**self.file_bindings, **kwargs})
+
+    def clone(self, value=None, deflang=None, altlang=None, meta=None, markers=None, file_bindings=None):
         '''
         Clone the text item, with optional overrides
 
@@ -75,7 +92,8 @@ class language_item(str):
         altlang = self.altlang if altlang is None else altlang
         meta = self.meta if meta is None else meta
         markers = self.markers if markers is None else markers
-        return language_item(value, deflang, altlang=altlang, meta=meta, markers=markers)
+        file_bindings = self.file_bindings if file_bindings is None else file_bindings
+        return language_item(value, deflang, altlang=altlang, meta=meta, markers=markers, file_bindings=file_bindings)
 
 
 # Following 2 lines are deprecated
@@ -86,34 +104,77 @@ LI = language_item  # Alias for language_item
 
 
 # XXX Defaulting to en leaves a bit too imperialist a flavor, really
-def load(fp_or_str, lang='en', preserve_key=False):
+def load(fp_or_str, lang='en', preserve_key=False, features=None, base_dir=None):
     '''
-    Read a word loom and return the tables as top-level result mapping
-    Loads the TOML
+    Read a word loom and return the tables as top-level result mapping.
 
-    Return a dict of the language items, indexed by the TOML key as well as its default language text
+    fp_or_str  - Path object or path string → opened as a file (base dir auto-detected);
+                 file-like object → read directly (.name used for base dir if present);
+                 bytes or a TOML content string → parsed in-memory (no base dir)
+    lang       - select only items whose language matches (default: 'en')
+    preserve_key - if True, store the TOML key in each item's metadata as '_key'
+    features   - set or dict of optional features to enable, e.g. ``{'file-inclusion'}``
+                 or ``{'file-inclusion': True}``
+    base_dir   - explicit base directory for resolving relative paths used by extensions;
+                 overrides the auto-detected value from the file path
 
-    fp_or_str - file-like object or string containing TOML
-    lang - select only texts in this language (default: 'en')
-    preserve_key - if True, the key in the TOML is preserved in each item's metadata
+    Supported features
+    ------------------
+    ``'file-inclusion'``
+        Metadata values with a ``file:``, ``dir:``, or ``glob:`` prefix are resolved
+        to their text contents and exposed as ``language_item.file_bindings``.
+        Requires a resolvable base directory (pass a Path/path-string, an open() handle,
+        or set ``base_dir`` explicitly).
 
     Example:
     >>> import wordloom
-    >>> with open('prompts.toml', mode='rb') as fp:
-    ...     loom = wordloom.load(fp)
-    >>> loom['system_instruction'].meta
-    {'category': 'system'}
-    >>> actual_text = loom['translation_prompt']
-    >>> str(actual_text)
-    'Translate the following text to {target_lang}: {text}'
-    >>> actual_text.markers
-    ['target_lang', 'text']
+    >>> from pathlib import Path
+    >>> loom = wordloom.load(Path('prompts.toml'), features={'file-inclusion'})
+    >>> prompt = loom['my_prompt']
+    >>> formatted = prompt.render(extra_var='value')
     '''
-    # Ensure we have a file-like object
-    if isinstance(fp_or_str, str):
-        fp_or_str = io.BytesIO(fp_or_str.encode('utf-8'))
+    # --- resolve base directory and normalise fp_or_str to a readable object ---
+    _detected_base: Path | None = None
+
+    if isinstance(fp_or_str, Path):
+        _detected_base = fp_or_str.parent.resolve()
+        fp_or_str = fp_or_str.open('rb')
+    elif isinstance(fp_or_str, str):
+        candidate = Path(fp_or_str)
+        if candidate.is_file():
+            # string looks like a file path and the file exists — open it
+            _detected_base = candidate.parent.resolve()
+            fp_or_str = candidate.open('rb')
+        else:
+            fp_or_str = io.BytesIO(fp_or_str.encode('utf-8'))
     elif isinstance(fp_or_str, bytes):
         fp_or_str = io.BytesIO(fp_or_str)
+    elif hasattr(fp_or_str, 'name'):
+        try:
+            _detected_base = Path(fp_or_str.name).parent.resolve()
+        except Exception:
+            pass
+
+    loom_base: Path | None = Path(base_dir).resolve() if base_dir is not None else _detected_base
+
+    # --- feature flags ---
+    file_inclusion = False
+    if features is not None:
+        if isinstance(features, set):
+            file_inclusion = 'file-inclusion' in features
+        else:
+            file_inclusion = bool(features.get('file-inclusion', False))
+
+    if file_inclusion and loom_base is None:
+        raise ValueError(
+            "The 'file-inclusion' feature requires a resolvable loom base directory. "
+            'Pass a Path object, a path string pointing to an existing file, '
+            'an open() file handle, or set base_dir= explicitly.'
+        )
+
+    if file_inclusion:
+        from wordloom.ext.file_includes import resolve_file_bindings  # noqa: PLC0415
+
     # Load TOML
     loom_raw = tomli.load(fp_or_str)
     # Select text by language
@@ -142,12 +203,13 @@ def load(fp_or_str, lang='en', preserve_key=False):
             meta = {kk: vv for kk, vv in v.items() if (not kk.startswith('_') and kk not in ('text', 'markers'))}
             if preserve_key:
                 meta['_key'] = k
+            fb = resolve_file_bindings(v, loom_base) if file_inclusion else {}
             if k in texts:
                 warnings.warn(f'Key {k} duplicates an existing item, which will be overwritten')
-            texts[k] = T(text, lang, altlang=altlang, meta=meta, markers=markers)
+            texts[k] = T(text, lang, altlang=altlang, meta=meta, markers=markers, file_bindings=fb)
             # Also index by literal text
             if text in texts:
                 warnings.warn(
                     f'Item default language text {text[:20]} duplicates an existing item, which will be overwritten')
-            texts[text] = T(text, lang, altlang=altlang, meta=meta, markers=markers)
+            texts[text] = T(text, lang, altlang=altlang, meta=meta, markers=markers, file_bindings=fb)
     return texts

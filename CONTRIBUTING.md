@@ -94,26 +94,21 @@ WordLoom/
 ├── pylib/              # Source code (becomes 'wordloom' package)
 │   ├── __init__.py
 │   ├── __about__.py    # Version info
-│   └── wordloom.py     # Main implementation
+│   ├── wordloom.py     # Core implementation
+│   └── ext/            # Opt-in extensions (loaded only when features= requests them)
+│       ├── __init__.py
+│       └── file_includes.py  # file-inclusion extension
 ├── resources/          # Bundled resources
 │   └── wordloom/
 │       └── sample.toml
 ├── test/               # Tests
 │   ├── test_basics.py
-│   ├── test_i18n_integration.py
-│   └── test_openai_integration.py
+│   ├── test_i18n.py
+│   ├── test_openai.py
+│   └── test_file_inclusion.py
 ├── pyproject.toml      # Project config
+├── implementation.md   # Library internals and extension docs
 └── README.md
-
-When installed, becomes:
-site-packages/
-└── wordloom/
-    ├── __init__.py
-    ├── __about__.py
-    ├── wordloom.py
-    └── resources/
-        └── wordloom/
-            └── sample.toml
 ```
 
 When installed, becomes:
@@ -124,6 +119,9 @@ site-packages/
     ├── __init__.py
     ├── __about__.py
     ├── wordloom.py
+    ├── ext/
+    │   ├── __init__.py
+    │   └── file_includes.py
     └── resources/
         └── wordloom/
             └── sample.toml
@@ -134,7 +132,8 @@ site-packages/
 - `pylib/__about__.py` - Version number (update for releases)
 - `pyproject.toml` - Dependencies, metadata, build config
 - `resources/wordloom/sample.toml` - Sample file used by tests
-- `README.md` - Main documentation
+- `README.md` - User-facing documentation
+- `implementation.md` - Library internals, `load()` API reference, extension docs
 - `wordloom_spec.md` - Format specification (CC BY 4.0)
 
 # Publishing a Release
